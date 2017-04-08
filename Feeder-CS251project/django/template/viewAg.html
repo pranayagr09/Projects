@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Instructor-page</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+    </head>
+    <body>
+    	{% block main_content %}
+    		<h4><center>{{q.question_name}}</center></h4>
+            <div class="container">
+             <table class="highlight centered  bordered" width="100%" >
+                	<tr>
+		                    <td>Answer value</td>
+		                    <td>Number of Responses</td>
+		            </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>{{r.response1}}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>{{r.response2}}</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>{{r.response3}}</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>{{r.response4}}</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>{{r.response5}}</td>
+                    </tr>
+              </table>
+        	</div>
+    	{% endblock main_content %}
+    </body>
+</html>

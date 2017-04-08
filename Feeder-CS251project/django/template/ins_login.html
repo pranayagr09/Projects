@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ins-Login</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+        <style>
+		    body {
+		      display: flex;
+		      min-height: 100vh;
+		      flex-direction: column;
+		    }
+
+		    main {
+		      flex: 1 0 auto;
+		    }
+
+		    body {
+		      background: #fff;
+		    }
+
+		    .input-field input[type=date]:focus + label,
+		    .input-field input[type=text]:focus + label,
+		    .input-field input[type=email]:focus + label,
+		    .input-field input[type=password]:focus + label {
+		      color: #e91e63;
+		    }
+
+		    .input-field input[type=date]:focus,
+		    .input-field input[type=text]:focus,
+		    .input-field input[type=email]:focus,
+		    .input-field input[type=password]:focus {
+		      border-bottom: 2px solid #e91e63;
+		      box-shadow: none;
+		    }
+  		</style>
+	</head>
+	<body>
+	<script>
+		function checkLoginState(){
+			console.log("1");
+			FB.getLoginStatus(function(response){
+				console.log("2");
+				if (response.status === 'connected') {
+					
+					console.log("3");
+					document.getElementById('fbuser').value=response.authResponse.accessToken;
+					document.getElementById("fbform").submit();
+				}
+				else
+				{
+					console.log("4");
+					FB.login(function(response) {
+						if (response.status === 'connected') {
+							document.getElementById('fbuser').value=response.authResponse.accessToken;
+							document.getElementById('fbform').submit();
+						}
+					}, {scope: 'email'});
+				}
+			});
+		}
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId      : '591895224347947',
+				cookie     : true,  // enable cookies to allow the server to access 
+				xfbml      : true,  // parse social plugins on this page
+				version    : 'v2.8' // use graph api version 2.8
+			});
+		};
+
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id))
+				return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	</script>
+
+	{% block main_content %}
+		<nav>
+		  <div class="nav-wrapper teal darken-3">
+		    <a href="" class="brand-logo center" style="font-family: 'Droid Sans', sans-serif;">Feeder Instructor</a>
+		  </div>
+		</nav>
+		<center class = "section">
+	      	<img class="responsive-img" style="width: 250px;" src="http://jakoblindhagen.com/feeder_logo.png"/>
+	      	<div class="section"></div>
+
+	      	<div class="container">
+	        	<div class="z-depth-1 grey lighten-4 row" style="display: inline-block; padding: 32px 58px 0px 58px; border: 1px solid #EEE;">
+
+	        	<div class="col l12">
+	          	<form method="post" action="/Feeder11/see/">{% csrf_token %}
+	          		<div>
+	            	<div class='row'>
+	              		<div class='col l12'></div>
+	            	</div>
+
+	            	<div class='row'>
+	              		<div class='input-field col l12'>
+	                		<input class='validate' type='text' name='username' id='username' />
+	                		<label for='username'>Username</label>
+	              		</div>
+	            	</div>
+
+		            <div class='row'>
+		              	<div class='input-field col l12'>
+		                	<input class='validate' type='password' name='password' id='password' />
+		                	<label for='password'>Password</label>
+		              	</div>
+		            </div>
+
+		            <br />
+		            <center>
+		              	<div class='row'>
+		              		<!-- <div class="fb-login-button" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" login_text="Sign up with Facebook" onlogin="checkLoginState();"></div> -->	
+		                	<button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect teal'><a class='white-text'>Login</a></button>
+		                </div>
+		                <div class='row'>
+		                	<button type="button" name='fb_login' class='col s12 btn btn-large waves-effect teal'><a class='white-text' onclick="checkLoginState();">Log in with facebook</a></button>
+		              	</div>
+		            </center>
+		            </div>
+	        	</form>
+	        	<form type="hidden" action="/Feeder11/facebook/" method="post" name="fbform" id="fbform">{% csrf_token %}
+	        		<input type ="hidden" id="fbuser" name="fbuser" >
+	        	</form>
+	        	{% if messages %}
+				<ul class="messages">
+				    {% for message in messages %}
+				    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				    {% endfor %}
+				</ul>
+				{% endif %}
+				<div class="fixed-action-btn">
+			    	<form method="post" action="/Feeder11/signup/">{% csrf_token %}
+			      		<button type="submit" name="loginuser" value="loginuser" class="waves-effect waves-light btn">New User? Sign up here!</a>
+			      	</button>
+			    	</form>
+			    </div>
+	        	</div>
+	        	</div>
+	      	</div>
+	    </center>
+	</body>
+	{% endblock main_content %}
+</html>

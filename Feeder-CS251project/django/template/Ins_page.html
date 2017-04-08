@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Instructor-page</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+        <script type="text/javascript">
+        $(document).ready(function() {
+		    $('select').material_select();
+		  });
+		</script>
+		<script type="text/javascript">
+					$('.datepicker').pickadate({
+		    selectMonths: true, // Creates a dropdown to control month
+		    selectYears: 15 // Creates a dropdown of 15 years to control year
+		  });
+		</script>
+        <style>
+        	body
+        	{
+        		font-family: 'Droid Sans', sans-serif;
+        	}
+        	.ui-datepicker-calendar {
+		    display: none;
+		    }​
+        </style>
+    </head>
+    <body>
+	    <script>
+	    var counter=1;
+	    function addDiv() {
+		    var objTo = document.getElementById('question')
+		    var divtest = document.createElement("div");
+		    var inputtest = document.createElement("input");
+		    inputtest.setAttribute("type","text");
+		    inputtest.setAttribute("class","active");
+		    inputtest.setAttribute("name","textquestion"+counter.toString());
+		    inputtest.setAttribute("id","textquestion"+counter.toString())
+		    divtest.setAttribute("class","input-field col l6");
+		    divtest.appendChild(inputtest);
+		    var labeltest = document.createElement("label")
+		    labeltest.setAttribute("for","textquestion")
+		    labeltest.setAttribute("class","active")
+		    texttest=document.createTextNode("Question "+counter.toString())
+		    labeltest.appendChild(texttest)
+		    divtest.appendChild(labeltest)
+		    objTo.appendChild(divtest)
+		    counter++;
+		}
+		function numquestion() {
+			var obj =document.getElementById('num_ques')
+			obj.value=""+counter-1;
+		}
+		</script>
+    {% block main_content %}
+    	<nav>
+		  <div class="nav-wrapper teal darken-4">
+		    <a href="" class="brand-logo center">Instructor page</a>
+		  </div>
+		</nav>
+		<div class="section"></div>
+		<div class="fixed-action-btn">
+	    <form method="post" action="/Feeder11/InsLogout/">{% csrf_token %}
+	      <button type="submit" name="logoutuser" value="logout" class="waves-effect waves-light btn">Logout</a>
+	      </button>
+	    </form>
+	    </div>
+	    <div class="container">
+		<ul class="collapsible popout" data-collapsible="accordion">
+		{% if courses %}
+			{% for c in courses %}
+		    <li>
+		      <div class="collapsible-header"><i class="material-icons">label</i>
+		      {{ c.course_code }}
+		      {% if c.course_sem is 1 %}
+		      	(Autumn - {{ c.course_year }})
+		      {% endif %}
+		      {% if c.course_sem is 2 %}
+		      	(Spring - {{ c.course_year }})
+		      {% endif %}
+		      {% if c.course_sem is 3 %}
+		      	(Summer - {{ c.course_year }})
+		      {% endif %}
+		      </div>
+
+		      <div class="collapsible-body container">
+		      	<div class="row col s12">
+		      		{% if c.course_sem is 1 %}
+			      		<center><h5>{{ c.course_name }} (Autumn - {{ c.course_year }})</h5></center>
+			      	{% endif %}
+			      	{% if c.course_sem is 2 %}
+			      		<center><h5>{{ c.course_name }} (Spring - {{ c.course_year }})</h5></center>
+			      	{% endif %}
+			      	{% if c.course_sem is 3 %}
+			      		<center><h5>{{ c.course_name }} (Summer - {{ c.course_year }})</h5></center>
+			      	{% endif %}
+			      	
+			      	<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+		      				<div class="collapsible-header center">{{ c.enrolled_students.all|length }} students enrolled</div>
+		      				<div class="collapsible-body container">
+		      					<ul>
+		      					<div class="row">
+									<li>
+										<div class="col l6"><b>Student Roll Number</b></div>
+										<div class="col l6"><b>Student Name
+										</b></div>
+									</li>
+								</div>
+		      					{% for s in student|dictsort:"roll_number" %}
+								{% if s in c.enrolled_students.all %}								
+								<div class="row">
+									<li>
+										<div class="col l6">{{ s.roll_number}}</div>
+										<div class="col l6">{{ s.student_name }}
+										</div>
+									</li>
+								</div>
+								{% endif %}
+								{% endfor %}
+								</ul>
+							</div>
+						</li>
+						</ul>
+					</div>
+					<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+		      				<div class="collapsible-header center">{{ c.feedback_forms.all|length }} Feedback Forms</div>
+		      				<div class="collapsible-body container">
+		      					<ul>
+		      					<div class="row">
+									<li>
+										<div class="col l4"><b>Feedback Name</b></div>
+										<div class="col l4"><b>Feedback Deadline
+										</b></div>
+										<div class="col l4"><b>Feedback Responses</b></div>
+									</li>
+								</div>
+		      					{% for f in c.feedback_forms.all %}
+		      					<div class="row">
+									<li>
+										<div class="col l4">{{ f.feedback_name }}</div>
+										<div class="col l4">{{ f.feedback_deadline.deadline_datetime }}
+										</div>
+										<div class="col l4">
+											<a href="/Feeder11/viewFeedback/{{f.pk}}">View</a>
+										</div>
+									</li>
+								</div>
+								{% endfor %}
+								</ul>
+							</div>
+						</li>
+						</ul>
+					</div>
+					<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+
+		      				<div class="collapsible-header center">{{ c.assignment_deadline.all|length }} Deadlines</div>
+		      				<div class="collapsible-body container">
+		      					<ul>
+		      					<h6><center>Finished Deadlines</center></h6>
+		      					<div class="row">
+									<li>
+										<div class="col l6"><b>Deadline Name</b></div>
+										<div class="col l6"><b>Deadline Date-Time
+										</b></div>
+									</li>
+								</div>
+		      					{% for f in c.assignment_deadline.all %}
+		      						{% if f.deadline_datetime.date < today.date %}
+			      					<div class="row">
+										<li>
+											<div class="col l6">{{ f.deadline_name }}</div>
+											<div class="col l6">{{ f.deadline_datetime }}
+											</div>
+										</li>
+									</div>
+									{% elif f.deadline_datetime.date == today.date and f.deadline_datetime.time < today.time%}
+									<div class="row">
+										<li>
+											<div class="col l6">{{ f.deadline_name }}</div>
+											<div class="col l6">{{ f.deadline_datetime }}
+											</div>
+										</li>
+									</div>
+									{% endif %}
+
+								{% endfor %}
+								</ul>
+								<ul>
+								<h6><center>Running Deadlines</center></h6>
+		      					<div class="row">
+									<li>
+										<div class="col l6"><b>Deadline Name</b></div>
+										<div class="col l6"><b>Deadline Date-Time
+										</b></div>
+									</li>
+								</div>
+		      					{% for f in c.assignment_deadline.all %}
+		      						{% if f.deadline_datetime.date > today.date %}
+			      					<div class="row">
+										<li>
+											<div class="col l6">{{ f.deadline_name }}</div>
+											<div class="col l6">{{ f.deadline_datetime }}
+											</div>
+										</li>
+									</div>
+									{% elif f.deadline_datetime.date == today.date and f.deadline_datetime.time >= today.time %}
+									<div class="row">
+										<li>
+											<div class="col l6">{{ f.deadline_name }}</div>
+											<div class="col l6">{{ f.deadline_datetime }}
+											</div>
+										</li>
+									</div>
+									{% endif %}
+								{% endfor %}
+								</ul>
+							</div>
+						</li>
+						</ul>
+					</div>
+					<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+					      	<div class="collapsible-header"><i class="material-icons">add</i>Add Assignement Deadline to the course</div>
+					      	<div class="collapsible-body">
+					      	<div class="container">
+					      		<form class="col l12" method="post" action="/Feeder11/addDeadline/">{% csrf_token %}
+				            	<div class='row'>
+				              		<div class='input-field col l6'>
+				                		<input type='text' name='deadlinename' id='deadlinename' required/>
+				                		<label for='deadlinename'>Assignment Name</label>
+				              		</div>
+					              	<div class='input-field col l6'>
+						               	<input placeholder="" type='date' class="active datepicker" name='deadlinedate' id='deadlinedate' required />
+						               	<label for='deadlinedate' class="active">Deadline Date</label>
+					              	</div>
+					              	<div class='input-field col l6'>
+						               	<input placeholder="" type='time' class="active" name='deadlinetime' id='deadlinetime' required />
+						               	<label for='deadlinetime' class="active">Deadline Time</label>
+					              	</div>
+					            	<div class="col l12">
+					            	<div class="section"></div>
+					            	<center>
+					                	<button type='submit' name='addDeadlineButton' class='col l12 btn btn-large waves-effect teal darken-2' value = {{ c }}><a class='white-text'><i class="material-icons">add</i></a></button>
+					            	</center>
+					            	</div>
+					      		</div>
+					      		</form>
+						</ul>
+					</div>
+					<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+					      	<div class="collapsible-header"><i class="material-icons">add</i>Add Feedback Form</div>
+					      	<div class="collapsible-body">
+					      	<div class="container">
+					      		<form class="col l12" method="post" action="/Feeder11/addFeedback/" onsubmit="numquestion();">{% csrf_token %}
+					      		<input type='hidden' name='num_ques' id='num_ques'/>
+				            	<div class='row'>
+				              		<div class='input-field col l6'>
+				                		<input type='text' name='feedbackname' id='feedbackname' required/>
+				                		<label for='feedbackname'>Feedback Name</label>
+				              		</div>
+					              	<div class='input-field col l6'>
+						               	<input placeholder="" type='date' class="active datepicker" name='feedbackdeadlinedate' id='feedbackdeadlinedate' required />
+						               	<label for='feedbackdeadlinedate' class="active">Feedback Deadline Date</label>
+					              	</div>
+					              	<div class='input-field col l6'>
+						               	<input placeholder="" type='time' class="active" name='feedbackdeadlinetime' id='deadlinetime' required />
+						               	<label for='feedbackdeadlinetime' class="active">Feedback Deadline Time</label>
+					              	</div>
+					              	<div id="question">
+					              	</div>
+					              	<div class="col s6">
+					              	<div class="section"></div>
+					            	<center>
+					                	<button type='button' name='addQuestionButton' class='col l12 btn btn-large waves-effect teal darken-2' onclick="addDiv();"><a class='white-text'><i class="material-icons">add</i>Add Question</a></button>
+					            	</center>
+					            	</div>
+					            	<div class="col l12">
+					            	<div class="section"></div>
+					            	<center>
+					                	<button type='submit' name='addFeedbackButton' class='col l12 btn btn-large waves-effect teal darken-2' value = {{ c }}><a class='white-text'><i class="material-icons">add</i></a></button>
+					            	</center>
+					            	</div>
+					      		</div>
+					      		</form>
+						</ul>
+					</div>
+		      	</div>
+		      </div>
+		    </li>
+		    {% endfor %}
+		{% endif %}
+	</body>
+    {% endblock main_content %}
+</html>

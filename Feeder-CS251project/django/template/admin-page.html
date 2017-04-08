@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>admin-page</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+        <script type="text/javascript">
+        $(document).ready(function() {
+		    $('select').material_select();
+		  });
+		</script>	
+		<script type="text/javascript">
+					$('.datepicker').pickadate({
+		    selectMonths: true, // Creates a dropdown to control month
+		    selectYears: 15 // Creates a dropdown of 15 years to control year
+		  });
+		</script>
+        <style>
+        	body
+        	{
+        		font-family: 'Droid Sans', sans-serif;
+        	}
+        	.ui-datepicker-calendar {
+		    display: none;
+		    }​
+        </style>
+    </head>
+    <body>
+    {% block main_content %}
+    	<nav>
+		  <div class="nav-wrapper teal darken-4">
+		    <a href="" class="brand-logo center">Admin page</a>
+		  </div>
+		</nav>
+		<div class="section"></div>
+		<form method="post" action="/Feeder11/update/">
+		  {% csrf_token %}
+	        <button type="submit" name="updatedata" value="update" class="top waves-effect waves-light btn">Update Student List</a>
+	      </button>
+	    </form>	    
+	    <div class="fixed-action-btn">
+	    <form method="post" action="/Feeder11/Logout/">{% csrf_token %}
+	      <button type="submit" name="logoutuser" value="logout" class="waves-effect waves-light btn">Logout</a>
+	      </button>
+	      </form>
+	     </div>
+
+		<div class="container">
+		<ul class="collapsible popout" data-collapsible="accordion">
+		{% if courses %}
+			{% for c in courses %}
+		    <li>
+		      <div class="collapsible-header"><i class="material-icons">label</i>
+		      {{ c.course_code }}
+		      {% if c.course_sem is 1 %}
+		      	(Autumn - {{ c.course_year }})
+		      {% endif %}
+		      {% if c.course_sem is 2 %}
+		      	(Spring - {{ c.course_year }})
+		      {% endif %}
+		      {% if c.course_sem is 3 %}
+		      	(Summer - {{ c.course_year }})
+		      {% endif %}
+		      </div>
+
+		      <div class="collapsible-body container">
+		      	<div class="row col s12">
+		      		{% if c.course_sem is 1 %}
+			      		<center><h5>{{ c.course_name }} (Autumn - {{ c.course_year }})</h5></center>
+			      	{% endif %}
+			      	{% if c.course_sem is 2 %}
+			      		<center><h5>{{ c.course_name }} (Spring - {{ c.course_year }})</h5></center>
+			      	{% endif %}
+			      	{% if c.course_sem is 3 %}
+			      		<center><h5>{{ c.course_name }} (Summer - {{ c.course_year }})</h5></center>
+			      	{% endif %}
+			      	
+			      	<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+		      				<div class="collapsible-header center">{{ c.enrolled_students.all|length }} students enrolled</div>
+		      				<div class="collapsible-body container">
+		      					<ul>
+		      					<div class="row">
+									<li>
+										<div class="col l6"><b>Student Roll Number</b></div>
+										<div class="col l6"><b>Student Name
+										</b></div>
+									</li>
+								</div>
+		      					{% for s in student|dictsort:"roll_number" %}
+								{% if s in c.enrolled_students.all %}								
+								<div class="row">
+									<li>
+										<div class="col l6">{{ s.roll_number}}</div>
+										<div class="col l6">{{ s.student_name }}
+										</div>
+									</li>
+								</div>
+								{% endif %}
+								{% endfor %}
+								</ul>
+							</div>
+						</li>
+						</ul>
+					</div>
+					<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+		      				<div class="collapsible-header center">{{ c.feedback_forms.all|length }} Feedback Forms</div>
+		      				<div class="collapsible-body container">
+		      					<ul>
+		      					<div class="row">
+									<li>
+										<div class="col l6"><b>Feedback Name</b></div>
+										<div class="col l6"><b>Feedback Deadline
+										</b></div>
+									</li>
+								</div>
+		      					{% for f in c.feedback_forms.all %}
+		      					<div class="row">
+									<li>
+										<div class="col l6">{{ f.feedback_name }}</div>
+										<div class="col l6">{{ f.feedback_deadline.deadline_datetime }}
+										</div>
+									</li>
+								</div>
+								{% endfor %}
+								</ul>
+							</div>
+						</li>
+						</ul>
+					</div>
+					<div class="container col l12">
+						<ul class="collapsible" data-collapsible="accordion">
+						<li>
+		      				<div class="collapsible-header center">{{ c.assignment_deadline.all|length }} Deadlines</div>
+		      				<div class="collapsible-body container">
+		      					<ul>
+		      					<div class="row">
+									<li>
+										<div class="col l6"><b>Deadline Name</b></div>
+										<div class="col l6"><b>Deadline Date-Time
+										</b></div>
+									</li>
+								</div>
+		      					{% for f in c.assignment_deadline.all %}
+		      					<div class="row">
+									<li>
+										<div class="col l6">{{ f.deadline_name }}</div>
+										<div class="col l6">{{ f.deadline_datetime }}
+										</div>
+									</li>
+								</div>
+								{% endfor %}
+								</ul>
+							</div>
+						</li>
+						</ul>
+					</div>
+		      		<form method="post" action="/Feeder11/addStudent">
+		      		{% csrf_token %}
+					<div class="input-field col l12">
+					    <select multiple name="student" id="student">
+					      <option value="" disabled selected>Add students to this course</option>
+					      {% if student %}
+							{% for s in student|dictsort:"roll_number" %}
+								{% if s in c.enrolled_students.all %}
+					      			<option value = {{ s.roll_number }} disabled selected>{{ s.roll_number }} - {{ s.student_name }}</option>
+								{% else %}
+									<option value = {{ s.roll_number }}>{{ s.roll_number }} - {{ s.student_name }}</option>
+								{% endif %}
+					      	{% endfor %}
+						  {% endif %}
+					    </select>
+					</div>
+					<center>
+	                	<button type='submit' name='add' class='col l12 btn btn-large waves-effect teal darken-2' value = {{ c }}><a class='white-text'><i class="material-icons">add</i></a></button>
+	            	</center>	
+	            	</form>  
+		      	</div>
+		      </div>
+		    </li>
+		    {% endfor %}
+		{% endif %}
+		    <li>
+		      	<div class="collapsible-header"><i class="material-icons">add</i>Add new course to the curriculum</div>
+		      	<div class="collapsible-body">
+		      	<div class="container">
+		      		<form class="col l12" method="post" action="/Feeder11/courseadd/">{% csrf_token %}
+	            	<div class='row'>
+	              		<div class='input-field col l6'>
+	                		<input type='text' name='coursename' id='coursename' required/>
+	                		<label for='coursename'>Course Name</label>
+	              		</div>
+		              	<div class='input-field col l6'>
+		                	<input type='text' name='coursecode' id='coursecode' required/>
+		                	<label for='coursecode'>Course Code</label>
+		              	</div>
+		              	<div class='input-field col l6'>
+			               	<input placeholder="" type='date' class="active datepicker" name='midsemdate' id='midsemdate' required />
+			               	<label for='midsemdate' class="active">Midsem Exam Date</label>
+		              	</div>
+		              	<div class='input-field col l6'>
+			               	<input placeholder="" type='date' class="active datepicker" name='endsemdate' id='endsemdate' required />
+			               	<label for='endsemdate' class="active">Endsem Exam Date</label>
+		              	</div>
+		              	<div class='input-field col l6'>
+			               	<input placeholder="" type='time' class="active" name='midsemtime' id='midsemtime' required />
+			               	<label for='midsemtime' class="active">Midsem Exam Time</label>
+		              	</div>
+		              	<div class='input-field col l6'>
+			               	<input placeholder="" type='time' class="active" name='endsemtime' id='endsemtime' required />
+			               	<label for='endsemtime' class="active">Endsem Exam Time</label>
+		              	</div>
+		              	<div class='input-field col l5'>
+			               	<input type='number' name='year' id='year' required />
+			               	<label for='year'>Year</label>
+		              	</div>
+		              	<br>
+		              	<div class="col l7">
+		              	<div class="section"></div>
+			              	Semester :
+			              	<a>
+						      <input class="with-gap" name="sem" type="radio" id="autumn" value="1" required/>
+						      <label for="autumn">Autumn</label>
+						    </a>
+						    <a>
+						      <input class="with-gap" name="sem" type="radio" id="spring" value="2"/>
+						      <label for="spring">Spring</label>
+						    </a>
+						    <a>
+						      <input class="with-gap" name="sem" type="radio" id="summer" value="3"/>
+						      <label for="summer">Summer</label>
+						    </a>
+		            	</div>
+		            	
+		            	<div class="col l12">
+		            	<div class="section"></div>
+		            	<center>
+		                	<button type='submit' name='add' class='col l12 btn btn-large waves-effect teal darken-2'><a class='white-text'><i class="material-icons">add</i></a></button>
+		            	</center>
+		            	</div>
+		      		</div>
+		      		</form>
+		      		
+		      	</div>
+		      	</div>
+		    </li>
+		  </ul>
+		</div>
+    </body>
+    {% endblock main_content %}
+</html>

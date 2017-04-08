@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Instructor-page</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+    </head>
+    <body>
+    	{% block main_content %}
+    		<h4><center>{{feedback_form.feedback_name}}</center></h4>
+            <div class="container">
+             <table class="highlight centered  bordered" width="100%" >
+                {%for q in feedback_form.feedback_questions.all%}
+                	<tr>
+		                    <td>{{q.question_name}}</td>
+		                    <td><a href="/Feeder11/viewGraph/{{q.pk}}">View Graph</a></td>
+		                    <td><a href="/Feeder11/viewAg/{{q.pk}}">View Aggregrate</a></td>
+		                    {%for a in q.question_answers.all%}
+		                    <td>{{a}}</td>
+		                    {%endfor%}
+		            </tr>
+		        {%endfor%}
+              </table>
+        	</div>
+<!--         	{%for q in feedback_form.feedback_questions.all%}
+        		{{feedback_form.feedback_name}}{{q.question_name}}.png
+        		<img src="/static/Feeder11/{{feedback_form.feedback_name}}{{q.question_name}}?.png">
+        		<img src="/Feeder11/x.png">
+         	{%endfor%}	 -->
+    	{% endblock main_content %}
+    </body>
+</html>
